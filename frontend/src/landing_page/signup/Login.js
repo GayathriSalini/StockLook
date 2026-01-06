@@ -1,0 +1,133 @@
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
+
+const Login = () => {
+  const navigate = useNavigate();
+  const [inputValue, setInputValue] = useState({
+    email: "",
+    password: "",
+  });
+
+  const { email, password } = inputValue;
+
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+    setInputValue({
+      ...inputValue,
+      [name]: value,
+    });
+  };
+
+  const handleError = (err) =>
+    toast.error(err, {
+      position: "bottom-left",
+    });
+
+  const handleSuccess = (msg) =>
+    toast.success(msg, {
+      position: "bottom-right",
+    });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const { data } = await axios.post(
+        "http://localhost:4000/auth/login",
+        {
+          ...inputValue,
+        },
+        { withCredentials: true }
+      );
+      const { success, message } = data;
+      if (success) {
+        handleSuccess(message);
+        setTimeout(() => {
+          window.location.href = "http://localhost:3001";
+        }, 1000);
+      } else {
+        handleError(message);
+      }
+    } catch (error) {
+      console.log(error);
+      handleError("Something went wrong. Please try again.");
+    }
+    setInputValue({
+      ...inputValue,
+      email: "",
+      password: "",
+    });
+  };
+
+  return (
+    <div className="container p-5 mt-5">
+      <div className="row">
+        <div className="col-lg-7 col-md-12 text-center p-5">
+          <img
+            src="/media/img/signup.png"
+            alt="Login illustration"
+            style={{ width: "90%" }}
+          />
+        </div>
+        <div className="col-lg-5 col-md-12 p-5">
+          <h1 className="fs-2 mb-3" style={{ fontWeight: 500, color: "#424242" }}>Login to your account</h1>
+          <p className="text-muted fs-5 mb-4">Enter your credentials to access your dashboard</p>
+
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <input
+                type="email"
+                name="email"
+                value={email}
+                className="form-control p-3 fs-5"
+                placeholder="Email address"
+                onChange={handleOnChange}
+                style={{ borderRadius: "4px", border: "1px solid #ddd" }}
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <input
+                type="password"
+                name="password"
+                value={password}
+                className="form-control p-3 fs-5"
+                placeholder="Password"
+                onChange={handleOnChange}
+                style={{ borderRadius: "4px", border: "1px solid #ddd" }}
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              className="btn btn-primary fs-5 mt-2"
+              style={{ width: "100%", padding: "12px", backgroundColor: "#387ed1", border: "none" }}
+            >
+              Login
+            </button>
+          </form>
+
+          <div className="mt-4 text-center">
+            <p className="text-muted" style={{ fontSize: "14px" }}>
+              Don't have an account? <Link to="/signup" style={{ textDecoration: "none", color: "#387ed1" }}>Sign up now</Link>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="row text-center text-muted mt-5 pt-5" style={{ fontSize: "12px", borderTop: "1px solid #eee" }}>
+        <div className="col">
+          <p>
+            Zerodha is India's largest stock broker. 1.5+ crore clients trust Zerodha with ₹4.5+ lakh crores worth of equity investments.
+          </p>
+          <p>
+            Forgot password? Or having trouble? <a href="#" style={{ textDecoration: "none", color: "#387ed1" }}>Reset it here</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Login;
