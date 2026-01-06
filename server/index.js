@@ -10,12 +10,12 @@ const app = express();
 const { MONGO_URL, PORT } = process.env;
 
 
-app.use(express.json());       
+app.use(express.json());
 app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:4000",
+    origin: ["http://localhost:3000", "http://localhost:3001"],
     credentials: true,
   })
 );
