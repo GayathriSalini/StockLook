@@ -44,8 +44,9 @@ const Signup = () => {
       const { success, message } = data;
       if (success) {
         handleSuccess(message);
+        console.log("Signup success navigating to login...");
         setTimeout(() => {
-          window.location.href = "http://localhost:3001";
+          navigate("/login");
         }, 1000);
       } else {
         handleError(message);
